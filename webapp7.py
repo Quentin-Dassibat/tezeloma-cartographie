@@ -730,12 +730,15 @@ if 'space' in st.session_state and st.session_state['space'] is True:
             del st.session_state['FORMJUR_KEY']
             del st.session_state['LOG_KEY']
             del st.session_state['CONC_KEY']
-            del st.session_state['dfilters_col']
-            del st.session_state['dfilters_val']
-            del st.session_state['dfilters_dtype']
             for l in ['A','B','C','D','E','F','G','NC']:
                 del st.session_state[f'DPE{l}_KEY']
             del st.session_state['BAILLEUR_KEY']
+            try:
+                del st.session_state['dfilters_col']
+                del st.session_state['dfilters_val']
+                del st.session_state['dfilters_dtype']
+            except:
+                pass
             
 
 
