@@ -632,7 +632,7 @@ if 'space' in st.session_state and st.session_state['space'] is True:
                     filtered_batiment_ids = [str(x) for x in list(gdf_filtered['batiment_groupe_id'])]
                     gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
                     export = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
-                    gdf_detailed.clear()
+                    #gdf_detailed.clear()
                     
                     #Prepare zip archive
                     zip_buffer = BytesIO()
@@ -660,7 +660,7 @@ if 'space' in st.session_state and st.session_state['space'] is True:
                     filtered_batiment_ids = [str(x) for x in list(gdf_filtered2['batiment_groupe_id'])]
                     gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
                     export2 = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
-                    gdf_detailed.clear()
+                    #gdf_detailed.clear()
                     
                     #Prepare zip archive
                     zip_buffer = BytesIO()
@@ -696,7 +696,7 @@ if 'space' in st.session_state and st.session_state['space'] is True:
                 filtered_batiment_ids = [str(x) for x in list(gdf_filtered['batiment_groupe_id'])]
                 gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
                 export = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
-                gdf_detailed.clear()
+                #gdf_detailed.clear()
                 
                 #Prepare zip archive
                 zip_buffer = BytesIO()
