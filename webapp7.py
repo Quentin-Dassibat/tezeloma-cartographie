@@ -20,7 +20,7 @@ import zipfile
 
 #Set directories
 working_dir = os.getcwd()
-output_dir = f"." #On github every file is on the same branch >> output_dir = f"." #Locally >> output_dir = f"{working_dir}/outputs" 
+output_dir = f"{working_dir}/outputs"
 if os.path.exists(output_dir):
     pass
 else:
