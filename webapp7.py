@@ -75,6 +75,8 @@ if 'space' in st.session_state and st.session_state['space'] is True:
         st.success(f"Vous êtes connecté en tant que {st.session_state['username']}")
 
         # ------------------------- TEZELOPA SPACE ---------------------------------------
+
+        st.cache_data.clear()
     
         # Load data
         #gdf_detailed = load_data(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",2154)
