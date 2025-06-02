@@ -77,7 +77,7 @@ if 'space' in st.session_state and st.session_state['space'] is True:
         # ------------------------- TEZELOPA SPACE ---------------------------------------
     
         # Load data
-        gdf_detailed = load_data(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",2154)
+        #gdf_detailed = load_data(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",2154)
         gdf_grouped = load_data(f"{output_dir}/natprop2bdnb_{commune_nom}_grouped.gpkg",2154)
     
         # UI
@@ -326,6 +326,9 @@ if 'space' in st.session_state and st.session_state['space'] is True:
         # Displaying
     
         if submit:
+
+            #Clear load_data() function's cache
+            #load_data.clear()
     
             # Filter dataframe for each permanent filter 
             ##forme juridique
@@ -616,6 +619,8 @@ if 'space' in st.session_state and st.session_state['space'] is True:
             # Package data
     
             st.write("### 📥 Téléchargement des fichiers générés")
+
+            gdf_detailed = load_data(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",2154)
     
             if selected_dfilterMode == "Lié":
                 
@@ -623,6 +628,7 @@ if 'space' in st.session_state and st.session_state['space'] is True:
                 filtered_batiment_ids = [str(x) for x in list(gdf_filtered['batiment_groupe_id'])]
                 gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
                 export = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
+                gdf_detailed.clear()
                 
                 #Prepare zip archive
                 zip_buffer = BytesIO()
@@ -650,6 +656,7 @@ if 'space' in st.session_state and st.session_state['space'] is True:
                 filtered_batiment_ids = [str(x) for x in list(gdf_filtered2['batiment_groupe_id'])]
                 gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
                 export2 = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
+                gdf_detailed.clear()
                 
                 #Prepare zip archive
                 zip_buffer = BytesIO()
