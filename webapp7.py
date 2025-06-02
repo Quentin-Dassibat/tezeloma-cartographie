@@ -623,9 +623,75 @@ if 'space' in st.session_state and st.session_state['space'] is True:
             st.write("### 📥 Téléchargement des fichiers générés")
 
             gdf_detailed = load_data(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",2154)
+
+            try:
     
-            if selected_dfilterMode == "Lié":
-                
+                if selected_dfilterMode == "Lié":
+                    
+                    #Filter gdf_detail with batiment_ids in the user's selection
+                    filtered_batiment_ids = [str(x) for x in list(gdf_filtered['batiment_groupe_id'])]
+                    gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
+                    export = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
+                    gdf_detailed.clear()
+                    
+                    #Prepare zip archive
+                    zip_buffer = BytesIO()
+                    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+                        # Add Excel files
+                        export_detailed = export.drop(columns=["geometry", "geom_groupe"])
+                        xlsx_detailed = dataframe2excel(export_detailed)
+                        zip_file.writestr(f"tableur_detaille_FPFD.xlsx", 
+                                          xlsx_detailed)
+                        export_grouped = gdf_filtered.drop(columns=["geometry"])
+                        xlsx_grouped = dataframe2excel(export_grouped)
+                        zip_file.writestr(f"tableur_groupe_FPFD.xlsx", xlsx_grouped)
+                        # Add GeoJSON files
+                        geojson_grouped = gdf_filtered.to_json()
+                        zip_file.writestr(f"carte_groupee_FPFD.geojson", geojson_grouped)
+            
+                else:
+        
+                    #Filter gdf_detail with batiment_ids in the user's selection
+                    ## For permament filters (FP)
+                    filtered_batiment_ids = [str(x) for x in list(gdf_filtered['batiment_groupe_id'])]
+                    gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
+                    export = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
+                    ## For dynamic filters (FD)
+                    filtered_batiment_ids = [str(x) for x in list(gdf_filtered2['batiment_groupe_id'])]
+                    gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
+                    export2 = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
+                    gdf_detailed.clear()
+                    
+                    #Prepare zip archive
+                    zip_buffer = BytesIO()
+                    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+                        # Add Excel files
+                        ## For permament filters (FP)
+                        export_detailed = export.drop(columns=["geometry", "geom_groupe"])
+                        xlsx_detailed = dataframe2excel(export_detailed)
+                        zip_file.writestr(f"tableur_detaille_FP.xlsx", 
+                                          xlsx_detailed)
+                        export_grouped = gdf_filtered.drop(columns=["geometry"])
+                        xlsx_grouped = dataframe2excel(export_grouped)
+                        zip_file.writestr(f"tableur_groupe_FP.xlsx", xlsx_grouped)
+                        ## For dynamic filters (FD)
+                        export_detailed2 = export2.drop(columns=["geometry", "geom_groupe"])
+                        xlsx_detailed2 = dataframe2excel(export_detailed2)
+                        zip_file.writestr(f"tableur_detaille_FD.xlsx", 
+                                          xlsx_detailed2)
+                        export_grouped2 = gdf_filtered2.drop(columns=["geometry"])
+                        xlsx_grouped2 = dataframe2excel(export_grouped2)
+                        zip_file.writestr(f"tableur_groupe_FD.xlsx", xlsx_grouped2)
+                        # Add GeoJSON files
+                        ## For permament filters (FP)
+                        geojson_grouped = gdf_filtered.to_json()
+                        zip_file.writestr(f"carte_groupee_FP.geojson", geojson_grouped)
+                        ## For dynamic filters (FD)
+                        geojson_grouped = gdf_filtered2.to_json()
+                        zip_file.writestr(f"carte_groupee_FD.geojson", geojson_grouped2)
+
+            except:
+
                 #Filter gdf_detail with batiment_ids in the user's selection
                 filtered_batiment_ids = [str(x) for x in list(gdf_filtered['batiment_groupe_id'])]
                 gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
@@ -646,48 +712,7 @@ if 'space' in st.session_state and st.session_state['space'] is True:
                     # Add GeoJSON files
                     geojson_grouped = gdf_filtered.to_json()
                     zip_file.writestr(f"carte_groupee_FPFD.geojson", geojson_grouped)
-        
-            else:
-    
-                #Filter gdf_detail with batiment_ids in the user's selection
-                ## For permament filters (FP)
-                filtered_batiment_ids = [str(x) for x in list(gdf_filtered['batiment_groupe_id'])]
-                gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
-                export = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
-                ## For dynamic filters (FD)
-                filtered_batiment_ids = [str(x) for x in list(gdf_filtered2['batiment_groupe_id'])]
-                gdf_detailed['batiment_groupe_id'] = gdf_detailed['batiment_groupe_id'].astype('string')
-                export2 = gdf_detailed.loc[gdf_detailed['batiment_groupe_id'].isin(filtered_batiment_ids)]
-                gdf_detailed.clear()
                 
-                #Prepare zip archive
-                zip_buffer = BytesIO()
-                with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-                    # Add Excel files
-                    ## For permament filters (FP)
-                    export_detailed = export.drop(columns=["geometry", "geom_groupe"])
-                    xlsx_detailed = dataframe2excel(export_detailed)
-                    zip_file.writestr(f"tableur_detaille_FP.xlsx", 
-                                      xlsx_detailed)
-                    export_grouped = gdf_filtered.drop(columns=["geometry"])
-                    xlsx_grouped = dataframe2excel(export_grouped)
-                    zip_file.writestr(f"tableur_groupe_FP.xlsx", xlsx_grouped)
-                    ## For dynamic filters (FD)
-                    export_detailed2 = export2.drop(columns=["geometry", "geom_groupe"])
-                    xlsx_detailed2 = dataframe2excel(export_detailed2)
-                    zip_file.writestr(f"tableur_detaille_FD.xlsx", 
-                                      xlsx_detailed2)
-                    export_grouped2 = gdf_filtered2.drop(columns=["geometry"])
-                    xlsx_grouped2 = dataframe2excel(export_grouped2)
-                    zip_file.writestr(f"tableur_groupe_FD.xlsx", xlsx_grouped2)
-                    # Add GeoJSON files
-                    ## For permament filters (FP)
-                    geojson_grouped = gdf_filtered.to_json()
-                    zip_file.writestr(f"carte_groupee_FP.geojson", geojson_grouped)
-                    ## For dynamic filters (FD)
-                    geojson_grouped = gdf_filtered2.to_json()
-                    zip_file.writestr(f"carte_groupee_FD.geojson", geojson_grouped2)
-            
             
             # Finalize ZIP
             zip_buffer.seek(0)
