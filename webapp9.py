@@ -103,6 +103,13 @@ if 'space' in st.session_state and st.session_state['space'] == 2:
         st.write("#### 🗂️ Bienvenue dans l'interface de visualisation de l'association TeZeLoPa.")
     
         st.write("Vous visualisez ici, en plus des données de la BDNB par défaut, les champs que vous ajoutez. Pour ajouter des champs, il suffit d'importer un tableur Excel comportant au moins une colonne appelée 'batiment_groupe_id'. Le programme va alors fusionner les données de la BDNB avec celles du tableur importé. Cette fusion permet ensuite d'afficher au format cartographique les données issues du travail de terrain, et de les superposer aux données initiales de la BDNB. Attention, il est nécessaire d'enregistrer la visualisation obtenue si vous souhaitez la conserver, car l'application la détruira une fois la page web fermée ou rafraîchie !")
+
+        st.markdown("""
+    Note pour l'utilisation de l'interface : tous les filtres fonctionnent de façon cumulative (opérateur logique "ET"). Par exemple, si l'on souhaite recenser tous les bâtiments du 1er arrondissement de Lyon dont le DPE représentatif est F **ou** G, on procède successivement :
+    - Etape 1 : filtrez sur code postal = 69001 et DPE = F ; générez la carte ; téléchargez les données 
+    - Etape 2 : filtrez sur code postal = 69001 et DPE = G ; générez la carte ; téléchargez les données 
+    - Etape 3 : sous Excel (ou autre logiciel), collez bout-à-bout les deux tableurs obtenus ; sous Framacarte (ou autre logiciel), superposez les deux couches cartographiques obtenues
+    """)
     
         if st.button("Se déconnecter"):
             st.session_state['authenticated'] = False
@@ -761,6 +768,22 @@ elif 'space' in st.session_state and st.session_state['space'] == 1:
 
     # -------------------------- DEMO SPACE ----------------------------------------------
 
+    st.write("#### 🗂️ Bienvenue dans l'interface de visualisation standard")
+
+    st.markdown("""
+    L'interface fonctionne en sélectionnant les bâtiments qui vous intéressent selon les caractéristiques proposées dans les options de filtres ci-dessous. L'application génère ensuite 1. la carte qui correspond à la sélection demandée et 2. les données téléchargeables associées. Les données téléchargeables sont de trois types :
+    - un tableur dit "groupé" au format .xlsx : une ligne = un bâtiment, et les colonnes correspondent aux filtres proposés
+    - un tableur dit "détaillé" au format .xlsx : une ligne = un propriétaire (personne morale), et les colonnes correspondent aux filtres proposés + aux attributs des propriétaires dans le fichier foncier
+    - un couche cartographique vectorielle au format .geojson : cette couche est l'export direct de la carte qui a été générée. Elle peut être importée dans un logiciel cartographique (ex. en ligne, Framacrate) pour produire une mise en page. 
+    """)
+
+    st.markdown("""
+    Note pour l'utilisation de l'interface : tous les filtres fonctionnent de façon cumulative (opérateur logique "ET"). Par exemple, si l'on souhaite recenser tous les bâtiments du 1er arrondissement de Lyon dont le DPE représentatif est F **ou** G, on procède successivement :
+    - Etape 1 : filtrez sur code postal = 69001 et DPE = F ; générez la carte ; téléchargez les données 
+    - Etape 2 : filtrez sur code postal = 69001 et DPE = G ; générez la carte ; téléchargez les données 
+    - Etape 3 : sous Excel (ou autre logiciel), collez bout-à-bout les deux tableurs obtenus ; sous Framacarte (ou autre logiciel), superposez les deux couches cartographiques obtenues
+    """)
+
     # Load data
     
     gdf_grouped = load_data_grouped(f"{output_dir}/natprop2bdnb_{commune_nom}_grouped.gpkg",2154)
@@ -965,11 +988,19 @@ else:
     
     # ------------------------- LANDING PAGE -------------------------------------
     
-    st.title("Territoire Zéro Logement Passoire")
+    st.title("Territoire Zéro Logement Mal Adaptés Climatiquement")
     
-    st.write("#### Bienvenue sur l'interface en ligne TeZeLoPa ! Cette interface vous permet de visualiser et de télécharger une sélection des données cartographiques issues de la Base de Données Nationale du Bâtiment (version 2024) pour les villes de Lyon et Villeurbanne.")
+    st.write("#### Bienvenue sur l'interface en ligne TeZeLoMa ! Cette interface vous permet de visualiser et de télécharger une sélection des données cartographiques issues de la Base de Données Nationale du Bâtiment (version 2024) pour les villes de Lyon et Villeurbanne.")
     
-    st.write("Vous êtes ici dans l'espace de visualisation générique. Si vous êtes membre de l'association TeZeLopa, veuillez vous connecter à l'espace de visualisation enrichi de l'association.")
+    st.write("Si vous êtes membre de l'association TeZeLopa, veuillez vous connecter à l'espace de visualisation enrichi de l'association.")
+
+    st.markdown("""
+    Les données proposées sont issues d'un recoupement de bases différentes agrégées à la maille bâtiment :
+    - le fichier foncier 2024 dit "fichier des locaux des personnes morales" (Trésor public) 
+    - la base DPE 2024 (Ademe)
+    - la base de données nationale du bâtiment 2024 (CSTB)
+    Pour en savoir plus sur l'origine des données : [https://bdnb.io](https://bdnb.io/documentation/modele_donnees/)
+    """)
 
 
     st.session_state.authenticated = False
