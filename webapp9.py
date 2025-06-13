@@ -18,6 +18,7 @@ import ast
 from io import BytesIO
 import zipfile
 import fiona
+import requests
 
 #Set directories
 working_dir = os.getcwd()
@@ -34,6 +35,16 @@ else:
 
 
 # ---------------------------- SHARED FUNCTIONS --------------------------------------
+
+@st.cache_data
+def get_file_path_from_dropbox(url,dest_path):
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest_path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+    return dest_path
 
 @st.cache_data
 def load_data_grouped(path,epsg_code):
@@ -97,7 +108,10 @@ if 'space' in st.session_state and st.session_state['space'] == 2:
     
         # Load data
         #gdf_detailed = load_data(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",2154)
-        gdf_grouped = load_data_grouped(f"{output_dir}/natprop2bdnb_{commune_nom}_grouped.gpkg",2154)
+        get_file_path_from_dropbox(
+            "https://www.dropbox.com/scl/fi/lgztuh59bljjhnchot203/natprop2bdnb_Lyon-Villeurbanne_grouped.gpkg?rlkey=hwth3xmy7m8f16i1dx5ikkmf2&st=q4hmb7zz&dl=1",
+            f"natprop2bdnb_{commune_nom}_grouped.gpkg")
+        gdf_grouped = load_data_grouped(f"natprop2bdnb_{commune_nom}_grouped.gpkg",2154)
     
         # UI
         st.write("#### 🗂️ Bienvenue dans l'interface de visualisation de l'association TeZeLoPa.")
@@ -641,7 +655,10 @@ if 'space' in st.session_state and st.session_state['space'] == 2:
                     
                     #Filter gdf_detail with batiment_ids in the user's selection
                     filtered_batiment_ids = [f'{x}' for x in list(gdf_filtered['batiment_groupe_id'])]
-                    export = load_data_detailed(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",
+                    get_file_path_from_dropbox(
+            "https://www.dropbox.com/scl/fi/l9x9ak6oj6cbbyrq2oqel/natprop2bdnb_Lyon-Villeurbanne.gpkg?rlkey=ligm2mkjujtvrwq57v4ocx0iv&st=8v1t1mrt&dl=1",
+            f"natprop2bdnb_{commune_nom}.gpkg")
+                    export = load_data_detailed(f"natprop2bdnb_{commune_nom}.gpkg",
                                                       2154,
                                                       "batiment_groupe_id",
                                                       filtered_batiment_ids)
@@ -668,14 +685,20 @@ if 'space' in st.session_state and st.session_state['space'] == 2:
                     #Filter gdf_detail with batiment_ids in the user's selection
                     ## For permament filters (FP)
                     filtered_batiment_ids = [f'{x}' for x in list(gdf_filtered['batiment_groupe_id'])]
-                    export = load_data_detailed(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",
+                    get_file_path_from_dropbox(
+            "https://www.dropbox.com/scl/fi/l9x9ak6oj6cbbyrq2oqel/natprop2bdnb_Lyon-Villeurbanne.gpkg?rlkey=ligm2mkjujtvrwq57v4ocx0iv&st=8v1t1mrt&dl=1",
+            f"natprop2bdnb_{commune_nom}.gpkg")
+                    export = load_data_detailed(f"natprop2bdnb_{commune_nom}.gpkg",
                                                       2154,
                                                       "batiment_groupe_id",
                                                       filtered_batiment_ids)
                     export['batiment_groupe_id'] = export['batiment_groupe_id'].astype('string')
                     ## For dynamic filters (FD)
                     filtered_batiment_ids2 = [f'{x}' for x in list(gdf_filtered2['batiment_groupe_id'])]
-                    export2 = load_data_detailed(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",
+                    get_file_path_from_dropbox(
+            "https://www.dropbox.com/scl/fi/l9x9ak6oj6cbbyrq2oqel/natprop2bdnb_Lyon-Villeurbanne.gpkg?rlkey=ligm2mkjujtvrwq57v4ocx0iv&st=8v1t1mrt&dl=1",
+            f"natprop2bdnb_{commune_nom}.gpkg")
+                    export2 = load_data_detailed(f"natprop2bdnb_{commune_nom}.gpkg",
                                                       2154,
                                                       "batiment_groupe_id",
                                                       filtered_batiment_ids2)
@@ -714,7 +737,10 @@ if 'space' in st.session_state and st.session_state['space'] == 2:
 
                 #Filter gdf_detail with batiment_ids in the user's selection
                 filtered_batiment_ids = [f'{x}' for x in list(gdf_filtered['batiment_groupe_id'])]
-                export = load_data_detailed(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",
+                get_file_path_from_dropbox(
+            "https://www.dropbox.com/scl/fi/l9x9ak6oj6cbbyrq2oqel/natprop2bdnb_Lyon-Villeurbanne.gpkg?rlkey=ligm2mkjujtvrwq57v4ocx0iv&st=8v1t1mrt&dl=1",
+            f"natprop2bdnb_{commune_nom}.gpkg")
+                export = load_data_detailed(f"natprop2bdnb_{commune_nom}.gpkg",
                                                   2154,
                                                   "batiment_groupe_id",
                                                   filtered_batiment_ids)
@@ -786,7 +812,10 @@ elif 'space' in st.session_state and st.session_state['space'] == 1:
 
     # Load data
     
-    gdf_grouped = load_data_grouped(f"{output_dir}/natprop2bdnb_{commune_nom}_grouped.gpkg",2154)
+    get_file_path_from_dropbox(
+            "https://www.dropbox.com/scl/fi/lgztuh59bljjhnchot203/natprop2bdnb_Lyon-Villeurbanne_grouped.gpkg?rlkey=hwth3xmy7m8f16i1dx5ikkmf2&st=q4hmb7zz&dl=1",
+            f"natprop2bdnb_{commune_nom}_grouped.gpkg")
+    gdf_grouped = load_data_grouped(f"natprop2bdnb_{commune_nom}_grouped.gpkg",2154)
     #gdf_detailed = load_data(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",2154)
     
     # Form with edition mode
@@ -942,7 +971,10 @@ elif 'space' in st.session_state and st.session_state['space'] == 1:
 
         #Filter gdf_detail with batiment_ids in the user's selection
         filtered_batiment_ids = [f'{x}' for x in list(gdf_filtered['batiment_groupe_id'])]
-        export = load_data_detailed(f"{output_dir}/natprop2bdnb_{commune_nom}.gpkg",
+        get_file_path_from_dropbox(
+            "https://www.dropbox.com/scl/fi/l9x9ak6oj6cbbyrq2oqel/natprop2bdnb_Lyon-Villeurbanne.gpkg?rlkey=ligm2mkjujtvrwq57v4ocx0iv&st=8v1t1mrt&dl=1",
+            f"natprop2bdnb_{commune_nom}.gpkg")
+        export = load_data_detailed(f"natprop2bdnb_{commune_nom}.gpkg",
                                           2154,
                                           "batiment_groupe_id",
                                           filtered_batiment_ids)
