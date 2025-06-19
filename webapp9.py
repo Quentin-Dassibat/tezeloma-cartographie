@@ -283,6 +283,8 @@ if 'space' in st.session_state and st.session_state['space'] == 2:
 
                 st.error("Aucune donnée externe n'a été importée. Veuillez d'abord importer un fichier.")
                 
+            else:
+                
                 try:
                     
                     if "batiment_groupe_id" not in columns_uploaded:
@@ -290,6 +292,8 @@ if 'space' in st.session_state and st.session_state['space'] == 2:
                         st.error("Le champ 'batiment_groupe_id' n'a pas été trouvé dans les données importées. La feuille de calcul à utiliser est-elle bien la bonne ?")
         
                     else:
+
+                        print("ok")
         
                         selected_dfilterMode = st.radio("Mode d'ajout des filtres dynamiques aux filtres permanents", ["Lié", "Non-lié"], key='DFILTERMODE_KEY')
                         
